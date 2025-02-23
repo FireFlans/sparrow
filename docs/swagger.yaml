@@ -1,0 +1,101 @@
+basePath: /
+info:
+  contact: {}
+  description: SPARROW Project API Documentation generated using Swagger
+  title: SPARROW API Documentation
+  version: "1.0"
+paths:
+  /api/categories/{policy}/{classification}:
+    get:
+      description: Get list of available security categories for a given policy (securityPolicyId.name)
+      parameters:
+      - description: Mandatory policy name
+        in: path
+        name: policy
+        required: true
+        type: string
+      - description: Mandatory classification name
+        in: path
+        name: classification
+        required: true
+        type: string
+      responses:
+        "200":
+          description: List of security categories
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad request
+      summary: Get list of security categories related to a policy and a classification
+  /api/classifications/{policy}:
+    get:
+      description: Get list of available classifications for a given policy (securityPolicyId.name)
+      parameters:
+      - description: Mandatory policy parameter
+        in: path
+        name: policy
+        required: true
+        type: string
+      responses:
+        "200":
+          description: List of classifications
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad request
+      summary: Get list of available classifications
+  /api/policies:
+    get:
+      description: Get the name of every loaded policy (securityPolicyId.name)
+      responses:
+        "200":
+          description: List of policy names" example:["policy1", "policy2"]
+          schema:
+            items:
+              type: string
+            type: array
+  /api/type/{policy}/{category}:
+    get:
+      description: Get the type of a security category  (securityPolicyId.name) (securityPolicyId.name)
+      parameters:
+      - description: Mandatory policy parameter
+        in: path
+        name: policy
+        required: true
+        type: string
+      - description: Mandatory category parameter
+        in: path
+        name: category
+        required: true
+        type: string
+      responses:
+        "200":
+          description: List of classifications
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad request
+      summary: Get the type of a security category
+  /api/v1/marking/{type}:
+    post:
+      description: Return marking from security label
+      parameters:
+      - description: Desired type
+        enum:
+        - png
+        - svg
+        in: path
+        name: type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+      summary: Return marking from security label
+swagger: "2.0"

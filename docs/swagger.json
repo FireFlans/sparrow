@@ -1,0 +1,153 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "SPARROW Project API Documentation generated using Swagger",
+        "title": "SPARROW API Documentation",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/api/categories/{policy}/{classification}": {
+            "get": {
+                "description": "Get list of available security categories for a given policy (securityPolicyId.name)",
+                "summary": "Get list of security categories related to a policy and a classification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Mandatory policy name",
+                        "name": "policy",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Mandatory classification name",
+                        "name": "classification",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of security categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/classifications/{policy}": {
+            "get": {
+                "description": "Get list of available classifications for a given policy (securityPolicyId.name)",
+                "summary": "Get list of available classifications",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Mandatory policy parameter",
+                        "name": "policy",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of classifications",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/policies": {
+            "get": {
+                "description": "Get the name of every loaded policy (securityPolicyId.name)",
+                "responses": {
+                    "200": {
+                        "description": "List of policy names\" example:[\"policy1\", \"policy2\"]",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/type/{policy}/{category}": {
+            "get": {
+                "description": "Get the type of a security category  (securityPolicyId.name) (securityPolicyId.name)",
+                "summary": "Get the type of a security category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Mandatory policy parameter",
+                        "name": "policy",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Mandatory category parameter",
+                        "name": "category",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of classifications",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/v1/marking/{type}": {
+            "post": {
+                "description": "Return marking from security label",
+                "summary": "Return marking from security label",
+                "parameters": [
+                    {
+                        "enum": [
+                            "png",
+                            "svg"
+                        ],
+                        "type": "string",
+                        "description": "Desired type",
+                        "name": "type",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    }
+}
