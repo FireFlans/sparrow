@@ -10,7 +10,7 @@ import (
 )
 
 func LoadPolicies() []structures.SPIF {
-	dirPath := "config/spifs/s4774/"
+	dirPath := "config/spifs/"
 	var loadedSPIFs []structures.SPIF
 	// Open the directory
 	err := filepath.Walk(dirPath, func(path string, info os.FileInfo, err error) error {

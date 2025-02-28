@@ -1,0 +1,15 @@
+{
+    "PolicyIdentifier" : "ACME",
+    "Classification" : "INTERNAL",
+    "Categories" : {
+        "Sensitive" : {
+            "type" : "RESTRICTIVE",
+            "values" : ["RED", "BLUE", "GREEN"]
+        },
+        "Administrative" : {
+            "type" : "PERMISSIVE",
+            "values" : ["HUMAN"]
+        }
+    }
+
+}
