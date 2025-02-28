@@ -46,6 +46,23 @@ cd test && go test -v
 SPIF files are located in `config/spifs`\
 You add your own in this folder
 
-## Contributing
+## Features roadmap
+<p style="text-align: center;">
+  <span style="color:green;margin-left: 20px;">✅</span>: Done 
+  <span style="color:yellow;margin-left: 20px;">♨</span>: Work in progress 
+  <span style="color:red;margin-left: 20px;">✘</span> Not started yet 
+</p>
 
+<span style="color:green">✅</span> Parse SPIFs files into Go structures\
+<span style="color:green">✅</span> Access basic infos through REST API\
+<span style="color:green">✅</span> Convert XML security Label to simplified JSON\
+<span style="color:yellow">♨</span> Convert JSON simplified security labels to XML\
+<span style="color:yellow">♨</span> Generate SVG marking from security label\
+<span style="color:red">✘</span> Generate PNG marking from security label\
+<span style="color:red">✘</span> Determine dominant security label from one or more labels\
+<span style="color:red">✘</span> Allow label manipulation through user friendly web interface\
+<span style="color:red">✘</span> Allow label SPIF adminitration through user friendly web interface
+
+
+## Contributing
 If you feel something is missing, don't hesitate to open an issue
