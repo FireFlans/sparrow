@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/categories/{policy}/{classification}": {
+        "/api/v1/categories/{policy}/{classification}": {
             "get": {
                 "description": "Get list of available security categories for a given policy (securityPolicyId.name)",
                 "summary": "Get list of security categories related to a policy and a classification",
@@ -29,10 +29,9 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Mandatory classification name",
+                        "description": "Optionnal classification name",
                         "name": "classification",
-                        "in": "path",
-                        "required": true
+                        "in": "path"
                     }
                 ],
                 "responses": {
@@ -51,7 +50,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/classifications/{policy}": {
+        "/api/v1/classifications/{policy}": {
             "get": {
                 "description": "Get list of available classifications for a given policy (securityPolicyId.name)",
                 "summary": "Get list of available classifications",
@@ -80,9 +79,53 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/policies": {
+        "/api/v1/mentions/{policy}/{classification}/{category}": {
+            "get": {
+                "description": "Get the tagSecurity for a mention",
+                "summary": "Get security mentions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Mandatory policy parameter",
+                        "name": "policy",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Mandatory category parameter",
+                        "name": "classification",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Mandatory category parameter",
+                        "name": "category",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of classifications",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/v1/policies": {
             "get": {
                 "description": "Get the name of every loaded policy (securityPolicyId.name)",
+                "summary": "Get list of available security policies",
                 "responses": {
                     "200": {
                         "description": "List of policy names\" example:[\"policy1\", \"policy2\"]",
@@ -96,7 +139,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/type/{policy}/{category}": {
+        "/api/v1/type/{policy}/{category}": {
             "get": {
                 "description": "Get the type of a security category  (securityPolicyId.name) (securityPolicyId.name)",
                 "summary": "Get the type of a security category",
@@ -128,30 +171,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad request"
-                    }
-                }
-            }
-        },
-        "/api/v1/marking/{type}": {
-            "post": {
-                "description": "Return marking from security label",
-                "summary": "Return marking from security label",
-                "parameters": [
-                    {
-                        "enum": [
-                            "png",
-                            "svg"
-                        ],
-                        "type": "string",
-                        "description": "Desired type",
-                        "name": "type",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
                     }
                 }
             }

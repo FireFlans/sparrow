@@ -3,17 +3,18 @@ package handlers
 import (
 	"net/http"
 	"net/url"
+	"sparrow/structures"
 	"sparrow/utils"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 // @Summary Get list of available security policies
-
 // @Description Get the name of every loaded policy (securityPolicyId.name)
 // @Success 200 {array} string "List of policy names" example:["policy1", "policy2"]
-// @Router /api/policies [get]
-func PoliciesHandler(spifs []utils.SPIF) gin.HandlerFunc {
+// @Router /api/v1/policies [get]
+func PoliciesHandler(spifs []structures.SPIF) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusOK, utils.GetPolicies(spifs))
 	}
@@ -24,8 +25,8 @@ func PoliciesHandler(spifs []utils.SPIF) gin.HandlerFunc {
 // @Param policy path string true "Mandatory policy parameter"
 // @Success 200 {array} string "List of classifications"
 // @Failure 400  "Bad request"
-// @Router /api/classifications/{policy} [get]
-func ClassificationsHandler(spifs []utils.SPIF) gin.HandlerFunc {
+// @Router /api/v1/classifications/{policy} [get]
+func ClassificationsHandler(spifs []structures.SPIF) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		decodedPolicy, err := url.QueryUnescape(c.Param("policy"))
 		if err != nil {
@@ -39,14 +40,17 @@ func ClassificationsHandler(spifs []utils.SPIF) gin.HandlerFunc {
 // @Summary Get list of security categories related to a policy and a classification
 // @Description Get list of available security categories for a given policy (securityPolicyId.name)
 // @Param policy path string true "Mandatory policy name"
-// @Param classification path string true "Mandatory classification name"
+// @Param classification path string false "Optionnal classification name"
 // @Success 200 {array} string "List of security categories"
 // @Failure 400  "Bad request"
-// @Router /api/categories/{policy}/{classification} [get]
-func CategoriesHandler(spifs []utils.SPIF) gin.HandlerFunc {
+// @Router /api/v1/categories/{policy}/{classification} [get]
+func CategoriesHandler(spifs []structures.SPIF) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		decodedPolicy, errP := url.QueryUnescape(c.Param("policy"))
 		decodedClassification, errC := url.QueryUnescape(c.Param("classification"))
+		if decodedClassification != "" {
+			decodedClassification = strings.TrimPrefix(decodedClassification, "/")
+		}
 		if errP != nil || errC != nil {
 			c.Status(http.StatusBadRequest)
 			return
@@ -61,8 +65,8 @@ func CategoriesHandler(spifs []utils.SPIF) gin.HandlerFunc {
 // @Param category path string true "Mandatory category parameter"
 // @Success 200 {array} string "List of classifications"
 // @Failure 400  "Bad request"
-// @Router /api/type/{policy}/{category} [get]
-func TypeHandler(spifs []utils.SPIF) gin.HandlerFunc {
+// @Router /api/v1/type/{policy}/{category} [get]
+func TypeHandler(spifs []structures.SPIF) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		decodedPolicy, errP := url.QueryUnescape(c.Param("policy"))
 		decodedCategory, errC := url.QueryUnescape(c.Param("category"))
@@ -71,5 +75,26 @@ func TypeHandler(spifs []utils.SPIF) gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, utils.GetType(spifs, decodedPolicy, decodedCategory))
+	}
+}
+
+// @Summary Get security mentions
+// @Description Get the tagSecurity for a mention
+// @Param policy path string true "Mandatory policy parameter"
+// @Param classification path string true "Mandatory category parameter"
+// @Param category path string true "Mandatory category parameter"
+// @Success 200 {array} string "List of classifications"
+// @Failure 400  "Bad request"
+// @Router /api/v1/mentions/{policy}/{classification}/{category} [get]
+func MentionsHandler(spifs []structures.SPIF) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		decodedPolicy, errP := url.QueryUnescape(c.Param("policy"))
+		decodedCategory, errCa := url.QueryUnescape(c.Param("category"))
+		decodedClassification, errCl := url.QueryUnescape(c.Param("classification"))
+		if errP != nil || errCa != nil || errCl != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		c.JSON(http.StatusOK, utils.GetMentions(spifs, decodedPolicy, decodedClassification, decodedCategory))
 	}
 }

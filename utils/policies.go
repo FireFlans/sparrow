@@ -6,11 +6,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sparrow/structures"
 )
 
-func LoadPolicies() []SPIF {
+func LoadPolicies() []structures.SPIF {
 	dirPath := "config/spifs/s4774/"
-	var loadedSPIFs []SPIF
+	var loadedSPIFs []structures.SPIF
 	// Open the directory
 	err := filepath.Walk(dirPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -26,7 +27,7 @@ func LoadPolicies() []SPIF {
 			}
 			defer file.Close()
 			// Parse the XML
-			var spif SPIF
+			var spif structures.SPIF
 			err = xml.NewDecoder(file).Decode(&spif)
 			if err != nil {
 				fmt.Println("Error decoding XML:", err)
@@ -43,20 +44,20 @@ func LoadPolicies() []SPIF {
 	return loadedSPIFs
 }
 
-func FindPolicy(spifs []SPIF, policy string) (SPIF, error) {
+func FindPolicy(spifs []structures.SPIF, policy string) (structures.SPIF, error) {
 	for _, spif := range spifs {
 		// Look the the right spif
-		if spif.SecurityPolicyID.Name == policy {
+		if spif.SecurityPolicyId.Name == policy {
 			return spif, nil
 		}
 	}
-	return SPIF{}, errors.New("policy not found")
+	return structures.SPIF{}, errors.New("policy not found")
 }
 
-func GetPolicies(spifs []SPIF) []string {
+func GetPolicies(spifs []structures.SPIF) []string {
 	var policies []string
 	for _, spif := range spifs {
-		policies = append(policies, spif.SecurityPolicyID.Name)
+		policies = append(policies, spif.SecurityPolicyId.Name)
 	}
 	return policies
 }

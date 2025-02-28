@@ -1,6 +1,10 @@
 package utils
 
-func GetClassifications(spifs []SPIF, policy string) []string {
+import (
+	"sparrow/structures"
+)
+
+func GetClassifications(spifs []structures.SPIF, policy string) []string {
 	var classifications []string
 	desiredSpif, err := FindPolicy(spifs, policy)
 	if err != nil {

@@ -5,7 +5,7 @@ info:
   title: SPARROW API Documentation
   version: "1.0"
 paths:
-  /api/categories/{policy}/{classification}:
+  /api/v1/categories/{policy}/{classification}:
     get:
       description: Get list of available security categories for a given policy (securityPolicyId.name)
       parameters:
@@ -14,10 +14,9 @@ paths:
         name: policy
         required: true
         type: string
-      - description: Mandatory classification name
+      - description: Optionnal classification name
         in: path
         name: classification
-        required: true
         type: string
       responses:
         "200":
@@ -29,7 +28,7 @@ paths:
         "400":
           description: Bad request
       summary: Get list of security categories related to a policy and a classification
-  /api/classifications/{policy}:
+  /api/v1/classifications/{policy}:
     get:
       description: Get list of available classifications for a given policy (securityPolicyId.name)
       parameters:
@@ -48,7 +47,36 @@ paths:
         "400":
           description: Bad request
       summary: Get list of available classifications
-  /api/policies:
+  /api/v1/mentions/{policy}/{classification}/{category}:
+    get:
+      description: Get the tagSecurity for a mention
+      parameters:
+      - description: Mandatory policy parameter
+        in: path
+        name: policy
+        required: true
+        type: string
+      - description: Mandatory category parameter
+        in: path
+        name: classification
+        required: true
+        type: string
+      - description: Mandatory category parameter
+        in: path
+        name: category
+        required: true
+        type: string
+      responses:
+        "200":
+          description: List of classifications
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad request
+      summary: Get security mentions
+  /api/v1/policies:
     get:
       description: Get the name of every loaded policy (securityPolicyId.name)
       responses:
@@ -58,7 +86,8 @@ paths:
             items:
               type: string
             type: array
-  /api/type/{policy}/{category}:
+      summary: Get list of available security policies
+  /api/v1/type/{policy}/{category}:
     get:
       description: Get the type of a security category  (securityPolicyId.name) (securityPolicyId.name)
       parameters:
@@ -82,20 +111,4 @@ paths:
         "400":
           description: Bad request
       summary: Get the type of a security category
-  /api/v1/marking/{type}:
-    post:
-      description: Return marking from security label
-      parameters:
-      - description: Desired type
-        enum:
-        - png
-        - svg
-        in: path
-        name: type
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-      summary: Return marking from security label
 swagger: "2.0"

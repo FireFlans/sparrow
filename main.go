@@ -19,18 +19,20 @@ func main() {
 	r := gin.Default()
 	spifs := utils.LoadPolicies()
 	// Swagger endpoint
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/documentation/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// GET API Routes
 	r.GET("/api/v1/policies", handlers.PoliciesHandler(spifs))
 	r.GET("/api/v1/classifications/:policy", handlers.ClassificationsHandler(spifs))
-	r.GET("/api/v1/categories/:policy/:classification", handlers.CategoriesHandler(spifs))
+	r.GET("/api/v1/categories/:policy/*classification", handlers.CategoriesHandler(spifs))
 	r.GET("/api/v1/type/:policy/:category", handlers.TypeHandler(spifs))
-	//r.GET("/api/v1/mentions/:policy/:classification/:category", handlers.MentionsHandler(spifs))
+	r.GET("/api/v1/mentions/:policy/:classification/:category", handlers.MentionsHandler(spifs))
 
 	// POST API routes
-	r.POST("/api/v1/marking/:type", handlers.MarkingHandler())
+	//r.POST("/api/v1/marking/:type", handlers.MarkingHandler())
 	//r.POST("/api/v1/dominant/", handlers.DominantLabelHandler())
+	//r.POST("/api/v1/generate", handlers.GenerateHandler())
+	r.POST("/api/v1/parse", handlers.ParseHandler())
 
 	r.Run(":8080") //r.RunTLS(crt,key)
 }
