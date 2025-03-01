@@ -22,6 +22,7 @@ func main() {
 	r.GET("/documentation/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// GET API Routes
+	// TODO use r.Groups
 	r.GET("/api/v1/policies", handlers.PoliciesHandler(spifs))
 	r.GET("/api/v1/classifications/:policy", handlers.ClassificationsHandler(spifs))
 	r.GET("/api/v1/categories/:policy/*classification", handlers.CategoriesHandler(spifs))
@@ -31,7 +32,7 @@ func main() {
 	// POST API routes
 	//r.POST("/api/v1/marking/:type", handlers.MarkingHandler())
 	//r.POST("/api/v1/dominant/", handlers.DominantLabelHandler())
-	//r.POST("/api/v1/generate", handlers.GenerateHandler())
+	r.POST("/api/v1/generate", handlers.GenerateHandler())
 	r.POST("/api/v1/parse", handlers.ParseHandler())
 
 	r.Run(":8080") //r.RunTLS(crt,key)

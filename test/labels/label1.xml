@@ -1,28 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<s4774:originatorConfidentialityLabel  
+<originatorConfidentialityLabel  
  xmlns:4774="urn:nato:stanag:4774:confidentialitymetadatalabel:1:0"> 
- <s4774:ConfidentialityInformation> 
-  <s4774:PolicyIdentifier>ACME</s4774:PolicyIdentifier> 
-  <s4774:Classification>INTERNAL</s4774:Classification> 
-  <s4774:Category TagName="Sensitive" Type="RESTRICTIVE"> 
-   <s4774:GenericValue>RED</s4774:GenericValue>
-   <s4774:GenericValue>BLUE</s4774:GenericValue> 
-   <s4774:GenericValue>GREEN</s4774:GenericValue> 
-  </s4774:Category> 
-  <s4774:Category TagName="Administrative" Type="PERMISSIVE"> 
-   <s4774:GenericValue>HUMAN</s4774:GenericValue>
-  </s4774:Category>
- </s4774:ConfidentialityInformation> 
- <s4774:OriginatorID IDType="rfc822Name"> 
-  alan.ross@reach.nato.int</s4774:OriginatorID> 
- <s4774:SuccessionHandling> 
-  <s4774:SuccessionDateTime>2022-03-14T09:00:00</s4774:SuccessionDateTime> 
-  <s4774:successorConfidentialityLabel> 
-   <s4774:ConfidentialityInformation> 
-    <s4774:PolicyIdentifier>ACME</s4774:PolicyIdentifier> 
-    <s4774:Classification>PUBLIC</s4774:Classification> 
-   </s4774:ConfidentialityInformation> 
-  </s4774:successorConfidentialityLabel> 
- </s4774:SuccessionHandling> 
- <s4774:CreationDataTime>2017-03-14T09:00:00</s4774:CreationDataTime> 
-</s4774:originatorConfidentialityLabel>
+ <ConfidentialityInformation> 
+  <PolicyIdentifier>ACME</PolicyIdentifier> 
+  <Classification>INTERNAL</Classification> 
+  <Category TagName="Sensitive" Type="RESTRICTIVE"> 
+   <GenericValue>RED</GenericValue>
+   <GenericValue>BLUE</GenericValue> 
+   <GenericValue>GREEN</GenericValue> 
+  </Category> 
+  <Category TagName="Administrative" Type="PERMISSIVE"> 
+   <GenericValue>HUMAN</GenericValue>
+  </Category>
+ </ConfidentialityInformation> 
+</originatorConfidentialityLabel>

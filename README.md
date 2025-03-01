@@ -56,7 +56,7 @@ You add your own in this folder
 <span style="color:green">✅</span> Parse SPIFs files into Go structures\
 <span style="color:green">✅</span> Access basic infos through REST API\
 <span style="color:green">✅</span> Convert XML security Label to simplified JSON\
-<span style="color:yellow">♨</span> Convert JSON simplified security labels to XML\
+<span style="color:green">✅</span> Convert JSON simplified security labels to XML\
 <span style="color:yellow">♨</span> Generate SVG marking from security label\
 <span style="color:red">✘</span> Generate PNG marking from security label\
 <span style="color:red">✘</span> Determine dominant security label from one or more labels\

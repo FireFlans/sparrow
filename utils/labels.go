@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/xml"
 	"fmt"
 	"sparrow/structures"
 )
@@ -21,4 +22,31 @@ func ParseXMLLabel(label structures.OriginatorConfidentialityLabel) map[string]i
 		}
 	}
 	return response
+}
+
+func GenerateXMLLabel(jsonData structures.JSONConfidentialityLabel) string {
+	var categories []structures.Category
+	for tag, cat := range jsonData.Categories {
+		categories = append(categories, structures.Category{
+			TagName:       tag,
+			Type:          cat.Type,
+			GenericValues: cat.Values,
+		})
+	}
+	xmlData := structures.OriginatorConfidentialityLabel{
+		XMLNS: "urn:nato:stanag:4774:confidentialitymetadatalabel:1:0",
+		ConfidentialityInformation: structures.ConfidentialityInformation{
+			PolicyIdentifier: jsonData.PolicyIdentifier,
+			Classification:   jsonData.Classification,
+			Categories:       categories,
+		},
+	}
+
+	output, err := xml.MarshalIndent(xmlData, "", "  ")
+	if err != nil {
+		return ""
+	}
+
+	return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + string(output)
+
 }

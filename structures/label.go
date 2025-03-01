@@ -17,5 +17,17 @@ type Category struct {
 
 type OriginatorConfidentialityLabel struct {
 	XMLName                    xml.Name                   `xml:"originatorConfidentialityLabel"`
+	XMLNS                      string                     `xml:"xmlns:s4774,attr"`
 	ConfidentialityInformation ConfidentialityInformation `xml:"ConfidentialityInformation"`
+}
+
+type JSONCategory struct {
+	Type   string   `json:"type"`
+	Values []string `json:"values"`
+}
+
+type JSONConfidentialityLabel struct {
+	PolicyIdentifier string                  `json:"PolicyIdentifier"`
+	Classification   string                  `json:"Classification"`
+	Categories       map[string]JSONCategory `json:"Categories"`
 }

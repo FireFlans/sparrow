@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
+	"os"
 	"testing"
 
 	. "github.com/Eun/go-hit"
@@ -133,3 +135,138 @@ func TestCategories(t *testing.T) {
 	)
 
 }
+
+func TestMentions(t *testing.T) {
+	Test(t,
+		Description("Request mentions for PUBLIC ACME ADMINISTRATIVE"),
+		Get("http://localhost:8080/api/v1/mentions/ACME/PUBLIC/Administrative"),
+		Expect().Status().Equal(http.StatusOK),
+		Expect().Body().String().Equal("null"),
+		Expect().Body().JSON().NotContains("FINANCE"),     // Should not appear
+		Expect().Body().JSON().NotContains("SALES"),       // Should not appear
+		Expect().Body().JSON().NotContains("ENGINEERING"), // Should not appear
+	)
+	Test(t,
+		Description("Request mentions for INTERNAL ACME ADMINISTRATIVE"),
+		Get("http://localhost:8080/api/v1/mentions/ACME/INTERNAL/Administrative"),
+		Expect().Status().Equal(http.StatusOK),
+		Expect().Body().JSON().Contains("FINANCE"),
+		Expect().Body().JSON().Contains("SALES"),
+		Expect().Body().JSON().Contains("ENGINEERING"),
+	)
+	Test(t,
+		Description("Request mentions and forget a parameter"),
+		Get("http://localhost:8080/api/v1/mentions/INTERNAL/Releasable%20To"),
+		Expect().Status().Equal(http.StatusNotFound),
+	)
+	Test(t,
+		Description("Request mentions for a non existent policy"),
+		Get("http://localhost:8080/api/v1/mentions/ACE/PUBLIC/Administrative"),
+		Expect().Status().Equal(http.StatusOK),
+		Expect().Body().String().Equal("null"),
+		Expect().Body().JSON().NotContains("FINANCE"),     // Should not appear
+		Expect().Body().JSON().NotContains("SALES"),       // Should not appear
+		Expect().Body().JSON().NotContains("ENGINEERING"), // Should not appear
+	)
+
+	Test(t,
+		Description("Request mentions for a non existent classification"),
+		Get("http://localhost:8080/api/v1/mentions/ACME/PULIC/Administrative"),
+		Expect().Status().Equal(http.StatusOK),
+		Expect().Body().JSON().Contains("FINANCE"),
+		Expect().Body().JSON().Contains("SALES"),
+		Expect().Body().JSON().Contains("ENGINEERING"),
+	)
+
+	Test(t,
+		Description("Request mentions for a non existent mention"),
+		Get("http://localhost:8080/api/v1/mentions/ACME/PUBLIC/Adminstrative"),
+		Expect().Status().Equal(http.StatusOK),
+		Expect().Body().String().Equal("null"),
+		Expect().Body().JSON().NotContains("FINANCE"),     // Should not appear
+		Expect().Body().JSON().NotContains("SALES"),       // Should not appear
+		Expect().Body().JSON().NotContains("ENGINEERING"), // Should not appear
+	)
+}
+
+func TestParsing(t *testing.T) {
+	xmlData1, err := os.ReadFile("labels/label1.xml")
+	if err != nil {
+		t.Fatalf("Failed to read label1.xml: %v", err)
+	}
+	jsonData1, _ := os.ReadFile("labels/label1_simplified.json")
+	var expectedJSONResponse1 map[string]interface{}
+	err = json.Unmarshal(jsonData1, &expectedJSONResponse1)
+	if err != nil {
+		t.Fatalf("Failed to read labels/label1_simplified.json: %v", err)
+	}
+	Test(t,
+		Description("Request JSON representation for label1"),
+		Post("http://localhost:8080/api/v1/parse"),
+		Send().Headers("Content-Type").Add("application/xml"),
+		Send().Body().String(string(xmlData1)),
+		Expect().Status().Equal(http.StatusOK),
+		Expect().Body().JSON().Equal(expectedJSONResponse1),
+	)
+
+	xmlData2, err := os.ReadFile("labels/label2.xml")
+	if err != nil {
+		t.Fatalf("Failed to read label2.xml: %v", err)
+	}
+	jsonData2, _ := os.ReadFile("labels/label2_simplified.json")
+	var expectedJSONResponse2 map[string]interface{}
+	err = json.Unmarshal(jsonData2, &expectedJSONResponse2)
+	if err != nil {
+		t.Fatalf("Failed to read labels/label2_simplified.json: %v", err)
+	}
+	Test(t,
+		Description("Request JSON representation for label2"),
+		Post("http://localhost:8080/api/v1/parse"),
+		Send().Headers("Content-Type").Add("application/xml"),
+		Send().Body().String(string(xmlData2)),
+		Expect().Status().Equal(http.StatusOK),
+		Expect().Body().JSON().Equal(expectedJSONResponse2),
+	)
+}
+
+/*
+func TestGenerating(t *testing.T) {
+	xmlData1, err := os.ReadFile("labels/label1.xml")
+	if err != nil {
+		t.Fatalf("Failed to read label1.xml: %v", err)
+	}
+	jsonData1, _ := os.ReadFile("labels/label1_simplified.json")
+	var jsonBody1 map[string]interface{}
+	err = json.Unmarshal(jsonData1, &jsonBody1)
+	if err != nil {
+		t.Fatalf("Failed to read labels/label2_simplified.json: %v", err)
+	}
+	Test(t,
+		Description("Request XML representation for label1"),
+		Post("http://localhost:8080/api/v1/generate"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Body().JSON(jsonBody1),
+		Expect().Status().Equal(http.StatusOK),
+		Expect().Body().String().Equal(string(xmlData1)),
+	)
+
+	xmlData2, err := os.ReadFile("labels/label2.xml")
+	if err != nil {
+		t.Fatalf("Failed to read label2.xml: %v", err)
+	}
+	jsonData2, _ := os.ReadFile("labels/label2_simplified.json")
+	var jsonBody2 map[string]interface{}
+	err = json.Unmarshal(jsonData2, &jsonBody2)
+	if err != nil {
+		t.Fatalf("Failed to read labels/label2_simplified.json: %v", err)
+	}
+	Test(t,
+		Description("Request XML representation for label2"),
+		Post("http://localhost:8080/api/v1/generate"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Body().JSON(jsonBody2),
+		Expect().Status().Equal(http.StatusOK),
+		Expect().Body().JSON().Equal(string(xmlData2)),
+	)
+}
+*/
