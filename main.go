@@ -5,6 +5,7 @@ import (
 	"sparrow/handlers"
 	"sparrow/utils"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -17,6 +18,13 @@ import (
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "Content-Type", "Accept", "Authorization"}
+	config.AllowCredentials = true
+	r.Use(cors.New(config))
+
 	spifs := utils.LoadPolicies()
 	// Swagger endpoint
 	r.GET("/documentation/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
