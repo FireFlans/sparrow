@@ -29,6 +29,12 @@ func main() {
 	// Swagger endpoint
 	r.GET("/documentation/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	// Playground route
+	r.Static("/static", "./playground/build/static")
+	r.GET("/playground/*path", func(c *gin.Context) {
+		c.File("./playground/build/index.html")
+	})
+
 	// GET API Routes
 	// TODO use r.Groups
 	r.GET("/api/v1/policies", handlers.PoliciesHandler(spifs))

@@ -229,7 +229,6 @@ func TestParsing(t *testing.T) {
 	)
 }
 
-/*
 func TestGenerating(t *testing.T) {
 	xmlData1, err := os.ReadFile("labels/label1.xml")
 	if err != nil {
@@ -269,4 +268,3 @@ func TestGenerating(t *testing.T) {
 		Expect().Body().JSON().Equal(string(xmlData2)),
 	)
 }
-*/

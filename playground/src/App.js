@@ -10,7 +10,9 @@ import {
   Typography,
   InputLabel,
   OutlinedInput,
-  Chip
+  Chip,
+  Tabs,
+  Tab
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -25,6 +27,14 @@ function App() {
   const [categories, setCategories] = useState([]);
   const [categoriesValues, setCategoriesValues] = useState({});
   const [checkedValues, setCheckedValues] = useState({});
+  const [displayType, setDisplayType] = useState(0);
+  const [XMLoutput, setXMLOutput] = useState('');
+  const [JSONoutput, setJSONOutput] = useState('');
+  const [displayedOutput, setDisplayedOutput] = useState('')
+
+  /*const handleOutputChange = (event) => {
+    setOutput(event.target.value);
+  };*/
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -35,6 +45,10 @@ function App() {
         width: 250,
       },
     },
+  };
+
+  const handlDisplayTypeChange = (event, newValue) => {
+    setDisplayType(newValue);
   };
 
   const handleTestClick = async () => {
@@ -121,37 +135,7 @@ function App() {
       setSelectedClassification(event.target.value)
     }     
   };
-  /*
-  const handleCategorySelectionChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setCheckedValues(
-      // On autofill we get a stringified value.
-
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };*/
-  const handleCheckboxChangee = (category, value) => {
-    setCheckedValues((prevCheckedValues) => {
-      // Ensure we're working with a copy of the previous state
-      const updatedCheckedValues = { ...prevCheckedValues };
-  
-      // Initialize the array for the category if it doesn't exist
-      if (!updatedCheckedValues[category]) {
-        updatedCheckedValues[category] = [];
-      }
-  
-      // Toggle the value in the array
-      if (updatedCheckedValues[category].includes(value)) {
-        updatedCheckedValues[category] = updatedCheckedValues[category].filter((item) => item !== value);
-      } else {
-        updatedCheckedValues[category] = [...updatedCheckedValues[category], value];
-      }
-  
-      return updatedCheckedValues;
-    });
-  };
+ 
   const handleCheckboxChange = (category, values) => {
     setCheckedValues((prevCheckedValues) => {
       // Ensure we're working with a copy of the previous state
@@ -163,9 +147,98 @@ function App() {
       return updatedCheckedValues;
     });
   };
-    const handleLogCheckedValues = () => {
-      console.log('Checked Values:', checkedValues);
+
+  const buildJSONLabel = async() => {
+    var JSONLabel = {
+      "PolicyIdentifier" : selectedPolicy,
+      "Classification" : selectedClassification,
+      "Categories" : {}
+    }
+    const promises = Object.entries(checkedValues).map(async ([cat, values]) => {
+      if (Array.isArray(values) && values.length > 0) {
+        const typeResponse = await fetch(`${sparrowUrl}/api/v1/type/${selectedPolicy}/${cat}`);
+        if (typeResponse.ok) {
+          const type = await typeResponse.json(); 
+          JSONLabel["Categories"][cat] = {
+            values: values,
+            type: type
+          };
+        }
+      }
+    });
+    await Promise.all(promises);
+    return JSONLabel;
+  }
+  const handleLogCheckedValues = async () => {
+    /*
+    if (displayType === 0) {
+   
+      const JSONLabel = await buildJSONLabel();
+      fetch(`${sparrowUrl}/api/v1/generate`, {
+        method: 'POST', // HTTP method
+        headers: {
+            'Content-Type': 'application/json' // Specify JSON format
+        },
+        body:JSON.stringify(JSONLabel)
+    }).then(XMLResponse => XMLResponse.text()) // Convert XML response to text
+      .then(xmlText => setOutput(xmlText)) // Set resolved text
+    }
+
+    if (displayType === 1) {
+   
+      const JSONLabel = await buildJSONLabel();
+      
+      setOutput(JSON.stringify(JSONLabel, null, 2))
+    }
+    else {
+      setOutput('To be implemented :)')
+    }*/
+  };
+
+  useEffect(() => {
+    const updateReadableValues = async () => {
+      const JSONLabel = await buildJSONLabel();
+  
+      // Set JSON output
+      const jsonOutput = JSON.stringify(JSONLabel, null, 2);
+      setJSONOutput(jsonOutput);
+  
+      // Fetch XML output
+      fetch(`${sparrowUrl}/api/v1/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(JSONLabel)
+      })
+      .then(XMLResponse => XMLResponse.text())
+      .then(xmlText => {
+        // Set XML output
+        setXMLOutput(xmlText);
+  
+        // Determine displayed output based on displayType
+        switch(displayType) {
+          case 0: setDisplayedOutput(xmlText); break;
+          case 1: setDisplayedOutput(jsonOutput); break;
+          case 2: setDisplayedOutput('To be implemented :)'); break;
+        }
+      });
     };
+  
+    updateReadableValues();
+  }, [checkedValues]);
+
+  useEffect(() => {
+    const changeDisplayType  = async () => {
+      
+      switch(displayType) {
+        case 0: setDisplayedOutput(XMLoutput); break
+        case 1: setDisplayedOutput(JSONoutput); break;
+        case 2: setDisplayedOutput('To be implemented :)')
+      }
+    }
+    changeDisplayType()
+  }, [displayType])
 
   return (
     <Box display="flex" height="100vh">
@@ -299,8 +372,37 @@ function App() {
       </Box>
 
       {/* Zone de droite */}
-      <Box width="75%" border="2px solid blue" padding="16px" boxSizing="border-box">
-      
+      <Box width="75%" border="2px solid blue" padding="16px" boxSizing="border-box" margin= "50px 50px 50px 50px">
+      <Tabs value={displayType} onChange={handlDisplayTypeChange} centered>
+        <Tab label="XML" />
+        <Tab label="JSON" />
+        <Tab label="SVG"/>
+      </Tabs>
+      <Box
+      sx={{
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        overflow: 'auto',
+        height: '100%', // Ensure the container takes full height
+        
+      }}
+    >
+      <TextField
+        multiline
+        fullWidth
+        variant="outlined"
+        value={displayedOutput}
+        //onChange={handleOutputChange}
+        InputProps={{
+          style: {
+            fontFamily: 'monospace',
+            padding: '10px',
+          },
+          disableUnderline: true,
+          readOnly: true, // Make the text area read-only
+        }}
+      />
+    </Box>
       </Box>
     </Box>
   );
