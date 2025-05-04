@@ -32,10 +32,6 @@ function App() {
   const [JSONoutput, setJSONOutput] = useState('');
   const [displayedOutput, setDisplayedOutput] = useState('')
 
-  /*const handleOutputChange = (event) => {
-    setOutput(event.target.value);
-  };*/
-
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -169,31 +165,7 @@ function App() {
     await Promise.all(promises);
     return JSONLabel;
   }
-  const handleLogCheckedValues = async () => {
-    /*
-    if (displayType === 0) {
-   
-      const JSONLabel = await buildJSONLabel();
-      fetch(`${sparrowUrl}/api/v1/generate`, {
-        method: 'POST', // HTTP method
-        headers: {
-            'Content-Type': 'application/json' // Specify JSON format
-        },
-        body:JSON.stringify(JSONLabel)
-    }).then(XMLResponse => XMLResponse.text()) // Convert XML response to text
-      .then(xmlText => setOutput(xmlText)) // Set resolved text
-    }
-
-    if (displayType === 1) {
-   
-      const JSONLabel = await buildJSONLabel();
-      
-      setOutput(JSON.stringify(JSONLabel, null, 2))
-    }
-    else {
-      setOutput('To be implemented :)')
-    }*/
-  };
+  
 
   useEffect(() => {
     const updateReadableValues = async () => {
@@ -241,89 +213,133 @@ function App() {
   }, [displayType])
 
   return (
-    <Box display="flex" height="100vh">
-      <Box
-        width="25%"
-        border="2px solid red"
-        margin= "50px 50px 15px"
-        display="flex"
-        flexDirection="column"
-        padding="16px"
-        boxSizing="border-box"
-      >
-        <Box height="10%" display="flex" alignItems="center" justifyContent="space-between">
-          <TextField 
-            label="URL" 
-            value={sparrowUrl}
-            onChange={(e) => setSparrowUrl(e.target.value)}
-            sx={{ 
-              flexGrow: 1, 
-              marginRight: '8px',
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: sparrowUrlValid === null ? 'inherit' : sparrowUrlValid ? 'green' : 'red',
-                },
-                '&:hover fieldset': {
-                  borderColor: sparrowUrlValid === null ? 'inherit' : sparrowUrlValid ? 'green' : 'red',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: sparrowUrlValid === null ? 'inherit' : sparrowUrlValid ? 'green' : 'red',
-                },
+    <Box display="flex" flexDirection="column" height="100vh" bgcolor="#1a304d">
+  {/* Header */}
+  <Box 
+   display="flex"
+   justifyContent="space-between"
+   alignItems="center"
+   padding="16px"
+   bgcolor="#001f33"  
+  >
+    <Box marginLeft="50px" >
+      {/* Logo */}
+      <img src="OIG5.png" alt="Logo" height="70px" />
+    </Box>
+    <Typography variant="h5" color="#00CDA4" marginLeft="16px">
+            SPARROW Playground
+          </Typography>
+    <Box marginRight="50px">
+      {/* API Reference Button */}
+      <Button
+            variant="contained"
+            style={{ 
+              backgroundColor: '#001f33',
+              border: "3px solid #00CDA4",
+              color: '#00CDA4'
+
+              
+            }}
+          >
+             {'</>'} API Reference
+          </Button>
+    </Box>
+  </Box>
+
+  {/* Main Content */}
+  <Box display="flex" height="calc(100vh - 68px)"> {/* Adjust height to account for header */}
+    <Box
+      width="25%"
+      border="2px solid red"
+      margin="50px 50px 15px"
+      display="flex"
+      flexDirection="column"
+      padding="16px"
+      boxSizing="border-box"
+    >
+      <Typography variant="h6" color="#00CDA4" marginLeft="16px" marginBottom="16px">
+            Parameters
+          </Typography>
+      <Box height="10%" display="flex" alignItems="center" justifyContent="space-between">
+      
+      <TextField
+  label="URL"
+  value={sparrowUrl}
+  onChange={(e) => setSparrowUrl(e.target.value)}
+  sx={{
+    flexGrow: 1,
+    marginRight: '8px',
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#00CDA4' : '#FF6885',
+      },
+      '&:hover fieldset': {
+        borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#00CDA4' : '#FF6885',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#00CDA4' : '#FF6885',
+      },
+    },
+    '& .MuiInputLabel-root': {
+      color: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#00CDA4' : '#FF6885',
+    },
+    '& .MuiInputBase-input': {
+      color: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#00CDA4' : '#FF6885',
+    },
+  }}
+/>
+        <Button variant="contained" color="primary" sx={{ marginRight: '8px' }} onClick={handleTestClick}>
+          <PlayArrowIcon />
+        </Button>
+        <Button variant="contained" color="success" onClick={handleValidate}>
+          <CheckIcon />
+        </Button>
+      </Box>
+      <Box height="10%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
+        <Typography variant="subtitle1" sx={{ marginBottom: '8px' }}>
+          POLICY
+        </Typography>
+        <FormControl required fullWidth>
+          <InputLabel>Policy</InputLabel>
+          <Select
+            label="Policy"
+            value={selectedPolicy}
+            onChange={handleSelectPolicy}
+            sx={{
+              '& .MuiSelect-select': {
+                fontWeight: 'bold',
+                textAlign: 'center',
               },
             }}
-          />
-          <Button variant="contained" color="primary" sx={{ marginRight: '8px' }} onClick={handleTestClick}>
-            <PlayArrowIcon />
-          </Button>
-          <Button variant="contained" color="success" onClick={handleValidate}>
-            <CheckIcon />
-          </Button>
-        </Box>
-        <Box height="10%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
-          <Typography variant="subtitle1" sx={{ marginBottom: '8px' }}>
-            POLICY
-          </Typography>
-          <FormControl required fullWidth>
-            <InputLabel>Policy</InputLabel>
-            <Select 
-              label="Policy"
-              value={selectedPolicy}
-              onChange={handleSelectPolicy}
-              sx={{
-                '& .MuiSelect-select': {
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                },
-              }}
-            >
-              {policies.map((policy) => (
-                <MenuItem key={policy.value} value={policy.value}>
-                  {policy.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-        <Box height="10%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
-          <Typography variant="subtitle1" sx={{ marginBottom: '10px' }}>
-            CLASSIFICATION
-          </Typography>
-          <FormControl fullWidth>
-            <InputLabel>Classification</InputLabel>
-            <Select 
-              label="Classification"
-              value={selectedClassification}
-              onChange={handleSelectClassification}
-            >
-              {classifications.map((classification) => (
-                <MenuItem key={classification.value} value={classification.value}>
-                  {classification.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-        <Box height="70%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
+          >
+            {policies.map((policy) => (
+              <MenuItem key={policy.value} value={policy.value}>
+                {policy.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box height="10%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
+        <Typography variant="subtitle1" sx={{ marginBottom: '10px' }}>
+          CLASSIFICATION
+        </Typography>
+        <FormControl fullWidth>
+          <InputLabel>Classification</InputLabel>
+          <Select
+            label="Classification"
+            value={selectedClassification}
+            onChange={handleSelectClassification}
+          >
+            {classifications.map((classification) => (
+              <MenuItem key={classification.value} value={classification.value}>
+                {classification.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box height="70%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
         <Typography variant="subtitle1" sx={{ marginBottom: '10px' }}>
           CATEGORIES
         </Typography>
@@ -331,80 +347,74 @@ function App() {
           <FormControl sx={{ m: 1, width: 300 }}>
             <InputLabel id="demo-multiple-chip-label">{category}</InputLabel>
             <Select
-             labelId="demo-multiple-chip-label"
-             id="demo-multiple-chip"
-             multiple
-             value={checkedValues[category] || []}
-             onChange={(event) => {
-              const {
-                target: { value },
-              } = event;
-              // Ensure value is treated as an array of selected items
-              const valueArray = typeof value === 'string' ? value.split(',') : value;
-              handleCheckboxChange(category, valueArray);
-            }}
-             input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-             renderValue={(selected) => (
-               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                 {selected.map((value) => (
-                   <Chip key={value} label={value} />
-                 ))}
-               </Box>
-             )}
-             MenuProps={MenuProps}
-           >
-             {categoriesValues[category]?.map((value) => (
-               <MenuItem key={value} value={value}>
-                 {value}
-               </MenuItem>
-             ))}
-           </Select>
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
+              multiple
+              value={checkedValues[category] || []}
+              onChange={(event) => {
+                const {
+                  target: { value },
+                } = event;
+                // Ensure value is treated as an array of selected items
+                const valueArray = typeof value === 'string' ? value.split(',') : value;
+                handleCheckboxChange(category, valueArray);
+              }}
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              {categoriesValues[category]?.map((value) => (
+                <MenuItem key={value} value={value}>
+                  {value}
+                </MenuItem>
+              ))}
+            </Select>
           </FormControl>
         ))}
-       
-        </Box>
-        <Box display="flex" justifyContent="center" marginTop="15px">
-          <Button variant="contained" color="secondary" onClick={handleLogCheckedValues}>
-            Log Checked Values
-          </Button>
-        </Box>
-        
       </Box>
+      
+    </Box>
 
-      {/* Zone de droite */}
-      <Box width="75%" border="2px solid blue" padding="16px" boxSizing="border-box" margin= "50px 50px 50px 50px">
+    {/* Right Zone */}
+    <Box width="75%" border="2px solid blue" padding="16px" boxSizing="border-box" margin="50px 50px 50px 50px">
       <Tabs value={displayType} onChange={handlDisplayTypeChange} centered>
         <Tab label="XML" />
         <Tab label="JSON" />
-        <Tab label="SVG"/>
+        <Tab label="SVG" />
       </Tabs>
       <Box
-      sx={{
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-        overflow: 'auto',
-        height: '100%', // Ensure the container takes full height
-        
-      }}
-    >
-      <TextField
-        multiline
-        fullWidth
-        variant="outlined"
-        value={displayedOutput}
-        //onChange={handleOutputChange}
-        InputProps={{
-          style: {
-            fontFamily: 'monospace',
-            padding: '10px',
-          },
-          disableUnderline: true,
-          readOnly: true, // Make the text area read-only
+        sx={{
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+          overflow: 'auto',
+          height: '100%',
         }}
-      />
-    </Box>
+      >
+        <TextField
+          multiline
+          fullWidth
+          variant="outlined"
+          value={displayedOutput}
+          InputProps={{
+            style: {
+              fontFamily: 'monospace',
+              padding: '10px',
+            },
+            disableUnderline: true,
+            readOnly: true,
+          }}
+        />
       </Box>
     </Box>
+  </Box>
+</Box>
+
   );
 }
 
