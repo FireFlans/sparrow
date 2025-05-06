@@ -213,20 +213,20 @@ function App() {
   }, [displayType])
 
   return (
-    <Box display="flex" flexDirection="column" height="100vh" bgcolor="#1a304d">
+    <Box display="flex" flexDirection="column" height="100vh" bgcolor="#6A89A7">
   {/* Header */}
   <Box 
    display="flex"
    justifyContent="space-between"
    alignItems="center"
    padding="16px"
-   bgcolor="#001f33"  
+   bgcolor="#384959"  
   >
     <Box marginLeft="50px" >
       {/* Logo */}
       <img src="OIG5.png" alt="Logo" height="70px" />
     </Box>
-    <Typography variant="h5" color="#00CDA4" marginLeft="16px">
+    <Typography variant="h5" color="#F1F0E8" marginLeft="16px">
             SPARROW Playground
           </Typography>
     <Box marginRight="50px">
@@ -234,9 +234,9 @@ function App() {
       <Button
             variant="contained"
             style={{ 
-              backgroundColor: '#001f33',
-              border: "3px solid #00CDA4",
-              color: '#00CDA4'
+              backgroundColor: '#384959',
+              border: "3px solid #E5E1DA",
+              color: '#F1F0E8'
 
               
             }}
@@ -257,7 +257,7 @@ function App() {
       padding="16px"
       boxSizing="border-box"
     >
-      <Typography variant="h6" color="#00CDA4" marginLeft="16px" marginBottom="16px">
+      <Typography variant="h6" color="#F1F0E8" marginLeft="16px" marginBottom="16px">
             Parameters
           </Typography>
       <Box height="10%" display="flex" alignItems="center" justifyContent="space-between">
@@ -271,20 +271,20 @@ function App() {
     marginRight: '8px',
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
-        borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#00CDA4' : '#FF6885',
+        borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#F1F0E8' : '#FF6885',
       },
       '&:hover fieldset': {
-        borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#00CDA4' : '#FF6885',
+        borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#F1F0E8' : '#FF6885',
       },
       '&.Mui-focused fieldset': {
-        borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#00CDA4' : '#FF6885',
+        borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#F1F0E8' : '#FF6885',
       },
     },
     '& .MuiInputLabel-root': {
-      color: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#00CDA4' : '#FF6885',
+      color: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#F1F0E8' : '#FF6885',
     },
     '& .MuiInputBase-input': {
-      color: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#00CDA4' : '#FF6885',
+      color: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#F1F0E8' : '#FF6885',
     },
   }}
 />
@@ -296,40 +296,84 @@ function App() {
         </Button>
       </Box>
       <Box height="10%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
-        <Typography variant="subtitle1" sx={{ marginBottom: '8px' }}>
+        <Typography  color="#F1F0E8" variant="subtitle1" sx={{ marginBottom: '8px' }}>
           POLICY
         </Typography>
         <FormControl required fullWidth>
-          <InputLabel>Policy</InputLabel>
-          <Select
-            label="Policy"
-            value={selectedPolicy}
-            onChange={handleSelectPolicy}
-            sx={{
-              '& .MuiSelect-select': {
-                fontWeight: 'bold',
-                textAlign: 'center',
-              },
-            }}
-          >
-            {policies.map((policy) => (
-              <MenuItem key={policy.value} value={policy.value}>
-                {policy.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+  <InputLabel
+    sx={{
+      color: '#F1F0E8',
+      '&.Mui-focused': { color: '#F1F0E8' }
+    }}
+  >
+    Policy
+  </InputLabel>
+  <Select
+    label="Policy"
+    value={selectedPolicy}
+    onChange={handleSelectPolicy}
+    sx={{
+      '& .MuiSelect-select': {
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#F1F0E8',
+      },
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#F1F0E8',
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#F1F0E8',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#F1F0E8',
+      },
+      '& .MuiSvgIcon-root': {
+        color: '#F1F0E8',
+      },
+    }}
+  >
+    {policies.map((policy) => (
+      <MenuItem key={policy.value} value={policy.value}>
+        {policy.label}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
       </Box>
       <Box height="10%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
-        <Typography variant="subtitle1" sx={{ marginBottom: '10px' }}>
+        <Typography color="#F1F0E8" variant="subtitle1" sx={{ marginBottom: '10px' }}>
           CLASSIFICATION
         </Typography>
         <FormControl fullWidth>
-          <InputLabel>Classification</InputLabel>
+          <InputLabel
+          sx={{
+            color: '#F1F0E8',
+            '&.Mui-focused': { color: '#F1F0E8' }
+          }}
+          >Classification</InputLabel>
           <Select
             label="Classification"
             value={selectedClassification}
             onChange={handleSelectClassification}
+            sx={{
+              '& .MuiSelect-select': {
+                fontWeight: 'bold',
+                textAlign: 'center',
+                color: '#F1F0E8',
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#F1F0E8',
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#F1F0E8',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#F1F0E8',
+              },
+              '& .MuiSvgIcon-root': {
+                color: '#F1F0E8',
+              },
+            }}
           >
             {classifications.map((classification) => (
               <MenuItem key={classification.value} value={classification.value}>
@@ -340,7 +384,7 @@ function App() {
         </FormControl>
       </Box>
       <Box height="70%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
-        <Typography variant="subtitle1" sx={{ marginBottom: '10px' }}>
+        <Typography color="#F1F0E8" variant="subtitle1" sx={{ marginBottom: '10px' }}>
           CATEGORIES
         </Typography>
         {Object.entries(categories).map(([index, category]) => (
