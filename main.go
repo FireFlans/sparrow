@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
+	"os"
+	"path/filepath"
 	_ "sparrow/docs"
 	"sparrow/handlers"
 	"sparrow/utils"
@@ -16,6 +20,8 @@ import (
 // @description SPARROW Project API Documentation generated using Swagger
 // @BasePath /
 func main() {
+	const ip = "0.0.0.0"
+	const port = "8080"
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	config := cors.DefaultConfig()
@@ -32,7 +38,19 @@ func main() {
 	// Playground route
 	r.Static("/static", "./playground/build/static")
 	r.GET("/playground/*path", func(c *gin.Context) {
-		c.File("./playground/build/index.html")
+		path := c.Param("path")
+
+		// Construct the file path
+		filePath := filepath.Join("./playground/build", path)
+
+		// Check if the file exists
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			c.String(http.StatusNotFound, "File not found")
+			return
+		}
+
+		// Serve the file
+		c.File(filePath)
 	})
 
 	// GET API Routes
@@ -49,5 +67,6 @@ func main() {
 	r.POST("/api/v1/generate", handlers.GenerateHandler())
 	r.POST("/api/v1/parse", handlers.ParseHandler())
 
-	r.Run(":8080") //r.RunTLS(crt,key)
+	fmt.Printf("\nStartup complete, go to http://%s:%s/playground to experiment\n", ip, port)
+	r.Run(fmt.Sprintf("%s:%s", ip, port)) //r.RunTLS(crt,key)
 }
