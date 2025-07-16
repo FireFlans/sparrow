@@ -15,17 +15,13 @@ import {
   Tab
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 function App() {
-  const currentProtocol = window.location.protocol; 
-  const currentDomain = window.location.hostname;
-  const currentPort = window.location.port;
-  const currentFullDomain = `${currentProtocol}//${currentDomain}${currentPort ? `:${currentPort}` : ''}`;
+  // const currentProtocol = window.location.protocol; 
+  // const currentDomain = window.location.hostname;
+  // const currentPort = window.location.port;
 
-
-  const [sparrowUrl, setSparrowUrl] = useState(currentFullDomain);
-  const [sparrowUrlValid, setSparrowUrlValid] = useState(null);
   const [policies, setPolicies] = useState([]);
   const [selectedPolicy, setSelectedPolicy] = useState("");
   const [classifications, setClassifications] = useState([]);
@@ -55,35 +51,24 @@ function App() {
     setDisplayType(newValue);
   };
 
-  const handleTestClick = async () => {
-    console.log("test");
-    try {
-      const response = await fetch(sparrowUrl + '/api/v1/policies');
-      if (response.ok) {
-        setSparrowUrlValid(true);
-        return true; // Resolve to true if the URL is valid
-      } else {
-        setSparrowUrlValid(false);
-        console.error('Error:', response.statusText);
-        return false; // Resolve to false if the URL is invalid
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    const fetchPolicies = async () => {
+      try {
+        const response = await fetch('/api/v1/policies');
+        if (response.ok) {
+          const policiesData = await response.json();
+          setPolicies(policiesData.map((policy, index) => ({ value: policy, label: policy })));
+        } else {
+          console.error('Failed to fetch policies');
+        }
+      } catch (error) {
+        console.error('Error fetching policies:', error);
       }
-    } catch (error) {
-      setSparrowUrlValid(false);
-      console.error('Error:', error);
-      return false; // Resolve to false if there's an error
-    }
-  };
-  
-  const handleValidate = async () => {
-    const isValid = await handleTestClick();
-    if (isValid) {
-      const policiesResponse = await fetch(`${sparrowUrl}/api/v1/policies`);
-      if (policiesResponse.ok) {
-        const policiesData = await policiesResponse.json();
-        setPolicies(policiesData.map((policy, index) => ({ value: policy, label: policy })));
-      }
-    }
-  };;
+    };
+
+    fetchPolicies();
+  }, []);
 
   useEffect(() => {
     const resetValues = () => {
@@ -95,7 +80,7 @@ function App() {
     }
     const fetchClassifications = async () => {
       if (selectedPolicy) {
-        const classificationsResponse = await fetch(`${sparrowUrl}/api/v1/classifications/${selectedPolicy}`);
+        const classificationsResponse = await fetch(`/api/v1/classifications/${selectedPolicy}`);
           if (classificationsResponse.ok) {
             const classificationsData = await classificationsResponse.json();
             setClassifications(classificationsData.map((classification, index) => ({ value: classification, label: classification })));
@@ -107,15 +92,13 @@ function App() {
   }, [selectedPolicy]);
 
   const handleSelectPolicy = async (event) => {
-    if (sparrowUrlValid) {
-      setSelectedPolicy(event.target.value)
-    }     
+    setSelectedPolicy(event.target.value)    
   };
   useEffect(() => {
     const fetchCategoriesAndValues = async () => {
 
       if (selectedClassification) {
-        const categoriesResponse = await fetch(`${sparrowUrl}/api/v1/categories/${selectedPolicy}/${selectedClassification}`);
+        const categoriesResponse = await fetch(`/api/v1/categories/${selectedPolicy}/${selectedClassification}`);
         if (categoriesResponse.ok) {
           const categoriesData = await categoriesResponse.json();
           if (categoriesData == null) {
@@ -129,7 +112,7 @@ function App() {
           }
           const tempCategoriesValues = {};
           for (const category of categoriesData ?? []) {
-            const valuesResponse = await fetch(`${sparrowUrl}/api/v1/mentions/${selectedPolicy}/${selectedClassification}/${category}`);
+            const valuesResponse = await fetch(`/api/v1/mentions/${selectedPolicy}/${selectedClassification}/${category}`);
             
             if (valuesResponse.ok) {
               const valuesData = await valuesResponse.json();
@@ -152,10 +135,7 @@ function App() {
   }, [selectedClassification]);
 
   const handleSelectClassification = async (event) => {
-    if (sparrowUrlValid) {
-      
-      setSelectedClassification(event.target.value)
-    }     
+    setSelectedClassification(event.target.value)
   };
  
   const handleCheckboxChange = (category, values) => {
@@ -178,7 +158,7 @@ function App() {
     }
     const promises = Object.entries(checkedValues).map(async ([cat, values]) => {
       if (Array.isArray(values) && values.length > 0) {
-        const typeResponse = await fetch(`${sparrowUrl}/api/v1/type/${selectedPolicy}/${cat}`);
+        const typeResponse = await fetch(`/api/v1/type/${selectedPolicy}/${cat}`);
         if (typeResponse.ok) {
           const type = await typeResponse.json(); 
           JSONLabel["Categories"][cat] = {
@@ -206,7 +186,7 @@ function App() {
       setJSONOutput(jsonOutput);
   
       // Fetch XML output
-      fetch(`${sparrowUrl}/api/v1/generate`, {
+      fetch(`/api/v1/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -292,94 +272,58 @@ function App() {
       padding="16px"
       boxSizing="border-box"
       textAlign="center"
-    >
-      <Typography color="#F1F0E8" variant="subtitle1" sx={{ fontSize : '3em', marginBottom: '8px' }}>
-            Parameters
-          </Typography>
-      <Box height="10%" display="flex" alignItems="center" justifyContent="space-between">
       
-      <TextField
-        label="URL"
-        value={sparrowUrl}
-        onChange={(e) => setSparrowUrl(e.target.value)}
-        sx={{
-          flexGrow: 1,
-          marginRight: '8px',
-          borderWidth : '2px',
-          fontSize: '1.2rem',
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#46CE4D' : '#FF6885',
-            },
-            '&:hover fieldset': {
-              borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#46CE4D' : '#FF6885',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#46CE4D' : '#FF6885',
-            },
-          },
-          '& .MuiInputLabel-root': {
-            color: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#46CE4D' : '#FF6885',
-          },
-          '& .MuiInputBase-input': {
-            color: sparrowUrlValid === null ? 'white' : sparrowUrlValid ? '#46CE4D' : '#FF6885',
-          },
-        }}
-      />
-        <Button variant="contained" color="success" onClick={handleValidate}>
-          <CheckIcon />
-        </Button>
-      </Box>
+    > 
       <Box height="10%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
         <Typography  color="#F1F0E8" variant="subtitle1" sx={{ fontSize : '3ex', marginBottom: '8px' }}>
           POLICY
         </Typography>
         <FormControl required fullWidth>
-  <InputLabel
-    sx={{
-      color: '#F1F0E8',
-      '&.Mui-focused': { color: '#F1F0E8' }
-    }}
-  >
-    Policy
-  </InputLabel>
-  <Select
-    label="Policy"
-    value={selectedPolicy}
-    onChange={handleSelectPolicy}
-    sx={{
-      '& .MuiSelect-select': {
-        fontWeight: 'bold',
-        textAlign: 'center',
-        color: '#F1F0E8',
-      },
-      '& .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#F1F0E8',
-      },
-      '&:hover .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#F1F0E8',
-      },
-      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#F1F0E8',
-      },
-      '& .MuiSvgIcon-root': {
-        color: '#F1F0E8',
-      },
-    }}
-  >
-    {policies.map((policy) => (
-      <MenuItem key={policy.value} value={policy.value}>
-        {policy.label}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
+          <InputLabel
+            sx={{
+              color: '#F1F0E8',
+              '&.Mui-focused': { color: '#F1F0E8' }
+            }}
+          >
+            Policy
+          </InputLabel>
+        <Select
+          label="Policy"
+          value={selectedPolicy}
+          onChange={handleSelectPolicy}
+          sx={{
+            '& .MuiSelect-select': {
+              fontWeight: 'bold',
+              textAlign: 'center',
+              color: '#F1F0E8',
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#F1F0E8',
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#F1F0E8',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#F1F0E8',
+            },
+            '& .MuiSvgIcon-root': {
+              color: '#F1F0E8',
+            },
+          }}
+        >
+          {policies.map((policy) => (
+            <MenuItem key={policy.value} value={policy.value}>
+              {policy.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       </Box>
       <Box height="10%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin="15px">
         <Typography color="#F1F0E8" variant="subtitle1" sx={{ fontSize : '3ex',marginBottom: '10px' }}>
           CLASSIFICATION
         </Typography>
-        <FormControl fullWidth>
+        <FormControl fullWidth required>
           <InputLabel
           sx={{
             color: '#F1F0E8',
@@ -419,10 +363,16 @@ function App() {
           </Select>
         </FormControl>
       </Box>
-      <Box height="70%" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" margin="15px">
+      <Box height="70%" maxHeight="70%" display="flex" flexDirection="column" alignItems="center" justifyContent="flex-start" margin="15px">
         <Typography color="#F1F0E8" variant="subtitle1" sx={{ fontSize : '3ex', marginBottom: '10px' }}>
           CATEGORIES
         </Typography>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          width="100%"
+        >
         {Object.entries(categories).map(([index, category]) => (
           <FormControl sx={{ m: 1}} fullWidth>
             <InputLabel 
@@ -489,6 +439,7 @@ function App() {
             </Select>
           </FormControl>
         ))}
+        </Box>
       </Box>
       
     </Box>
@@ -515,26 +466,38 @@ function App() {
       </Tabs>
       <Box
         sx={{
-          
+          margin : '10px',
           overflow: 'auto',
-          height: '100%',
+          height: '90%',
+          flexDirection: 'column',
+          border: '1px solid rgba(0, 0, 0, 0.23)', // Outline the Box
+          borderRadius: '4px', // Optional: for rounded corners
+          position: 'relative', // For positioning the arrow
         }}
       >
         <TextField
           multiline
           fullWidth
-          variant="outlined"
+          //variant="outlined"
           value={displayedOutput}
           InputProps={{
             style: {
               fontFamily: 'monospace',
               padding: '10px',
-              color : '#F1F0E8',
+              color: '#F1F0E8',
             },
             disableUnderline: true,
             readOnly: true,
           }}
+          sx={{
+            flexGrow: 1,
+            overflow: 'auto',
+            '& .MuiOutlinedInput-notchedOutline': {
+              border: 'none',
+            },
+          }}
         />
+        
       </Box>
     </Box>
   </Box>
