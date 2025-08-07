@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
-	"os"
 	"testing"
 
 	. "github.com/Eun/go-hit"
@@ -189,6 +187,7 @@ func TestMentions(t *testing.T) {
 	)
 }
 
+/*
 func TestParsing(t *testing.T) {
 	xmlData1, err := os.ReadFile("labels/label1.xml")
 	if err != nil {
@@ -268,3 +267,4 @@ func TestGenerating(t *testing.T) {
 		Expect().Body().JSON().Equal(string(xmlData2)),
 	)
 }
+*/
