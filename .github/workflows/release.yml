@@ -11,6 +11,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env: 
+        REPO: nicofgrx/sparrow # TODO change before PR
+
     steps:
       - name: Set version
         id: version
@@ -35,5 +38,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ github.repository }}:${{ steps.version.outputs.tag }}
-            ${{ github.repository }}:latest
+            ${{ env.REPO }}:${{ steps.version.outputs.tag }}
+            ${{ env.REPO }}:latest
