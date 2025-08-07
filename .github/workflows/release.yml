@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env: 
-        REPO: nicofgrx/sparrow # TODO change before PR
+        REPO: fireflans/sparrow
 
     steps:
       - name: Set version
