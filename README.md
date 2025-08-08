@@ -36,6 +36,20 @@ In addition it provides a security labels playground and an administration inter
 2. **Access the API**:
    - The server runs on `http://localhost:8080`.
    - To access API documentation, go to `http://localhost:8080/documentation/index.html`
+
+### Running the Server with Docker
+#### Build from source 
+```bash
+docker build . -t sparrow
+docker run -p 8080:8080 -d sparrow
+```
+
+#### Prebuild image
+```bash
+docker pull fireflans/sparrow:<version>
+docker run -p 8080:8080 fireflans/sparrow:<version>
+```
+
 ## Testing
 To run the tests, start the server and use the following command:
 ```bash
