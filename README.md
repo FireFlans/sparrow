@@ -8,7 +8,7 @@ In addition it provides a security labels playground and an administration inter
 
 - **SPIF Parsing**: Load any XML SPIF file, parse it and access data through REST API
 - **Security Label Handling**: Build STANAG 4774 labels (coming soon), convert them in JSON in a full (coming soon) or in a simplified format
-- **Security Label Playground (scheduled)**: Build compliant security labels from the provided SPIFs or from your own security policies
+- **Security Label Playground**: Build compliant security labels from the provided SPIFs or from your own security policies
 - **SPIF Administration (scheduled)**: Administrate your security policies from a unique web interface
 
 ## Getting Started
@@ -46,8 +46,8 @@ docker run -p 8080:8080 -d sparrow
 
 #### Prebuild image
 ```bash
-docker pull fireflans/sparrow:<version>
-docker run -p 8080:8080 fireflans/sparrow:<version>
+docker pull fireflan/sparrow:<version>
+docker run -p 8080:8080 fireflan/sparrow:<version>
 ```
 
 ## Testing
@@ -71,11 +71,11 @@ You add your own in this folder
 <span style="color:green">✅</span> Access basic infos through REST API\
 <span style="color:green">✅</span> Convert XML security Label to simplified JSON\
 <span style="color:green">✅</span> Convert JSON simplified security labels to XML\
-<span style="color:yellow">♨</span> Generate SVG marking from security label\
+<span style="color:green">✅</span> Allow label manipulation through user friendly web interface\
+<span style="color:yellow">♨</span> Determine dominant security label from one or more labels\
 <span style="color:red">✘</span> Generate PNG marking from security label\
-<span style="color:red">✘</span> Determine dominant security label from one or more labels\
-<span style="color:red">✘</span> Allow label manipulation through user friendly web interface\
-<span style="color:red">✘</span> Allow label SPIF adminitration through user friendly web interface
+<span style="color:red">✘</span> Generate SVG marking from security label\
+<span style="color:red">✘</span> Allow label SPIF administration through user friendly web interface
 
 
 ## Contributing
