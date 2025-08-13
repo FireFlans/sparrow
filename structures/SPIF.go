@@ -68,6 +68,7 @@ type SecurityCategoryTagSet struct {
 type SecurityCategoryTag struct {
 	Name            string        `xml:"name,attr"`
 	TagType         string        `xml:"tagType,attr"`
+	EnumType        string        `xml:"enumType,attr"`
 	SingleSelection bool          `xml:"singleSelection,attr"`
 	TagCategories   []tagCategory `xml:"tagCategory"`
 }

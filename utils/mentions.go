@@ -2,9 +2,11 @@ package utils
 
 import (
 	"sparrow/structures"
-	"strings"
 )
 
+/*
+Returns all values from a security category
+*/
 func GetMentions(spifs []structures.SPIF, policy string, classification string, category string) []string {
 	var mentions []string
 	desiredSpif, err := FindPolicy(spifs, policy)
@@ -19,7 +21,7 @@ func GetMentions(spifs []structures.SPIF, policy string, classification string, 
 		// Iterate through each TagCategory in the SecurityCategoryTag
 		for _, tagCategory := range tagSet.SecurityCategoryTag.TagCategories {
 			// Check if the classification is not in the excluded classes
-			if !contains(tagCategory.ExcludedClasses, classification) {
+			if !Contains(tagCategory.ExcludedClasses, classification) {
 				mentions = append(mentions, tagCategory.Name)
 			}
 		}
@@ -27,11 +29,6 @@ func GetMentions(spifs []structures.SPIF, policy string, classification string, 
 	return mentions
 }
 
-func contains(slice []string, item string) bool {
-	for _, s := range slice {
-		if strings.EqualFold(s, item) {
-			return true
-		}
-	}
-	return false
-}
+/*
+Returns values from a mention in a label
+*/

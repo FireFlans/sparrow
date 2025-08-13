@@ -20,8 +20,8 @@ import (
 // @description SPARROW Project API Documentation generated using Swagger
 // @BasePath /
 func main() {
-	const ip = "0.0.0.0"
-	const port = "8080"
+	const ip = "0.0.0.0" // TODO env variable
+	const port = "8080"  // TODO env variable
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	config := cors.DefaultConfig()
@@ -63,7 +63,7 @@ func main() {
 
 	// POST API routes
 	//r.POST("/api/v1/marking/:type", handlers.MarkingHandler())
-	//r.POST("/api/v1/dominant/", handlers.DominantLabelHandler())
+	//r.POST("/api/v1/dominant", handlers.DominantLabelHandler(spifs))
 	r.POST("/api/v1/generate", handlers.GenerateHandler())
 	r.POST("/api/v1/parse", handlers.ParseHandler())
 

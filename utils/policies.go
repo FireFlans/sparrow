@@ -61,3 +61,7 @@ func GetPolicies(spifs []structures.SPIF) []string {
 	}
 	return policies
 }
+
+func GetLabelSecurityPolicy(label structures.JSONConfidentialityLabel) string {
+	return label.PolicyIdentifier
+}
