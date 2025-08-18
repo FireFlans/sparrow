@@ -42,7 +42,6 @@ func GetType(spifs []structures.SPIF, policy string, category string) (response 
 
 func ExtractPermissiveCategories(label structures.JSONConfidentialityLabel) map[string]string {
 	permissiveCategories := make(map[string]string)
-	fmt.Println(label)
 	for _, category := range label.Categories {
 
 		if category.Type == "PERMISSIVE" {
@@ -60,4 +59,13 @@ func GetRestrictiveCategories(label structures.JSONConfidentialityLabel) []strin
 		}
 	}
 	return restrictiveCategories
+}
+
+func FindCategoryIndex(categories []structures.Category, newCategory string) int {
+	for index, category := range categories {
+		if category.TagName == newCategory {
+			return index
+		}
+	}
+	return -1
 }

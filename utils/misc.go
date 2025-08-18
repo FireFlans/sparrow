@@ -19,6 +19,21 @@ func IntersectStringsArrays(a, b []string) []string {
 	return result
 }
 
+func UnionStringArray(a, b []string) []string {
+	set := make(map[string]struct{})
+	for _, v := range a {
+		set[v] = struct{}{}
+	}
+	for _, v := range b {
+		set[v] = struct{}{}
+	}
+	var result []string
+	for v := range set {
+		result = append(result, v)
+	}
+	return result
+}
+
 func Contains(slice []string, item string) bool {
 	for _, s := range slice {
 		if strings.EqualFold(s, item) {

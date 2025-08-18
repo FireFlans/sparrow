@@ -33,17 +33,104 @@ func DominantLabel(spifs []structures.SPIF, labels []structures.JSONConfidential
 	}
 	dominantLabel.ConfidentialityInformation.Classification = classification
 
-	// Permissive categories related stuff [Rules 4-5-6]
+	// Security categories related stuff [Rules 4-5-6-7-8]
 
-	ExtractPermissiveCategories(labels[0])
-	/*
-		for _, label := range labels[1:] {
-			// Get current label permissive categories
-			labelPermissiveCategories := GetPermissiveCategories(label)
+	// Group all categories by type
+	categoryMap := make(map[string][]structures.Category)
+	for _, label := range labels {
+		for tag, jsonCat := range label.Categories {
+			cat := structures.Category{
+				TagName:       tag,
+				Type:          jsonCat.Type,
+				GenericValues: jsonCat.Values,
+			}
+			categoryMap[cat.Type] = append(categoryMap[cat.Type], cat)
+		}
+	}
+	// Build the final list of security categories
+	var securityCategories []structures.Category
+	for catType, cats := range categoryMap {
+		// Rule 4-5-6: Permissive categories
+		if catType == "PERMISSIVE" {
+			/*
+				[Rule - 6] If a confidentiality label (within a set of confidentiality labels) does not
+				contain  a  permissive  category  (of  the  same  type)  that  one  or  more
+				confidentiality  labels  contain  the  dominant  confidentiality  label  must
+				not contain that permissive category.
+			*/
+			allLabelsHaveCategory := true
+			for _, label := range labels {
+				if _, ok := label.Categories[cats[0].TagName]; !ok {
+					allLabelsHaveCategory = false
+					break
+				}
+			}
+			if !allLabelsHaveCategory {
+				continue
+			}
+			/*
+				[Rule - 4] For all confidentiality labels that contain a permissive category (of the
+				same type) the dominant confidentiality label must contain a
+				permissive category (of that type) with the intersection of the category
+				values.
+			*/
+			var intersection []string
+			if len(cats) > 0 {
+				intersection = cats[0].GenericValues
+				for _, cat := range cats[1:] {
+					intersection = IntersectStringsArrays(intersection, cat.GenericValues)
+				}
+			}
+			/*
+				[Rule - 5] For all confidentiality labels that contain a permissive category (of the
+				same type) and the intersection of the category values is empty the
+				dominant confidentiality label must not contain that permissive
+				category.
+			*/
+			if len(intersection) > 0 {
+				securityCategories = append(securityCategories, structures.Category{
+					TagName:       cats[0].TagName,
+					Type:          catType,
+					GenericValues: intersection,
+				})
+			}
+		} else if catType == "RESTRCTIVE" {
+			/*
+				[Rule - 7] For each confidentiality label that exists with one or more restrictive
+				categories (of the same type) the dominant confidentiality label must
+				contain  a  restrictive  category  (of  that  type)  with  the  union  of  the
+				category values.
+			*/
+			var union []string
+			for _, cat := range cats {
+				union = UnionStringArray(union, cat.GenericValues)
+			}
+			securityCategories = append(securityCategories, structures.Category{
+				TagName:       cats[0].TagName,
+				Type:          catType,
+				GenericValues: union,
+			})
+		} else {
+			/*
+				[Rule - 8] For each confidentiality label that exists with one or more informative
+				categories (of the same type) the dominant confidentiality label may
+				contain  an  informative  category  (of  that  type)  with  the  union  of  the
+				category values.
+				INCLUDING THEM IN THE DOMINANT LABEL
+			*/
+			var union []string
+			for _, cat := range cats {
+				union = UnionStringArray(union, cat.GenericValues)
+			}
+			securityCategories = append(securityCategories, structures.Category{
+				TagName:       cats[0].TagName,
+				Type:          catType,
+				GenericValues: union,
+			})
+		}
+	}
 
-			// Intersect with previous categories as we only want categories present in all labels [Rules - 6]
-			permissiveCategories = IntersectStringsArrays(permissiveCategories, labelPermissiveCategories)
-		}*/
+	dominantLabel.ConfidentialityInformation.Categories = securityCategories
 
 	return dominantLabel, nil
 }

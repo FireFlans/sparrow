@@ -54,3 +54,31 @@ func GenerateHandler() gin.HandlerFunc {
 		c.Data(http.StatusOK, "application/xml", []byte(xmlLabel))
 	}
 }
+
+// @Summary Returns a JSON dominant label from a list of JSON labels
+// @Description Returns a JSON Dominant Label, computed from the rules described in SRD ADatP-4774.1, section 4.4
+// @Success 200
+// @Failure 400 Bad or missing label provided
+// @Router /api/v1/dominant [post]
+
+func DominantLabelHandler(spifs []structures.SPIF) gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		var listLabels []structures.JSONConfidentialityLabel
+		if err := c.ShouldBindJSON(&listLabels); err != nil {
+			fmt.Println(err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		if len(listLabels) < 2 {
+			c.JSON(http.StatusBadRequest, "Error : Need to provide at least 2 labels")
+		}
+		label, err := utils.DominantLabel(spifs, listLabels)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, utils.ParseXMLLabel(label))
+
+	}
+}

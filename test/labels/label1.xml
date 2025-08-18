@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?> 
-<originatorConfidentialityLabel  
- xmlns:4774="urn:nato:stanag:4774:confidentialitymetadatalabel:1:0"> 
+<originatorConfidentialityLabel xmlns:4774="urn:nato:stanag:4774:confidentialitymetadatalabel:1:0"> 
  <ConfidentialityInformation> 
   <PolicyIdentifier>ACME</PolicyIdentifier> 
   <Classification>INTERNAL</Classification> 

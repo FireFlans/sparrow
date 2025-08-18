@@ -63,7 +63,7 @@ func main() {
 
 	// POST API routes
 	//r.POST("/api/v1/marking/:type", handlers.MarkingHandler())
-	//r.POST("/api/v1/dominant", handlers.DominantLabelHandler(spifs))
+	r.POST("/api/v1/dominant", handlers.DominantLabelHandler(spifs))
 	r.POST("/api/v1/generate", handlers.GenerateHandler())
 	r.POST("/api/v1/parse", handlers.ParseHandler())
 
