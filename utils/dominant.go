@@ -94,7 +94,7 @@ func DominantLabel(spifs []structures.SPIF, labels []structures.JSONConfidential
 					GenericValues: intersection,
 				})
 			}
-		} else if catType == "RESTRCTIVE" {
+		} else if catType == "RESTRICTIVE" {
 			/*
 				[Rule - 7] For each confidentiality label that exists with one or more restrictive
 				categories (of the same type) the dominant confidentiality label must
